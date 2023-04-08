@@ -8,7 +8,8 @@ class SubCategory {
         catchError(async (req:any, res:any, next:any) => {
 
             const {name, categoryId} = req.body;
-            await subCategoryModel.insertMany({name, slug:slugify(name),categoryId});
+            let result = new subCategoryModel({name, slug:slugify(name),categoryId});
+            await result.save();
             return res.json({message:"success"});
         })(req, res, next);   
     }
@@ -16,8 +17,8 @@ class SubCategory {
         catchError(async (req:any, res:any, next:any) => {
 
             const{id} = req.params;
-            const {name} = req.body;
-            const cat = await subCategoryModel.findByIdAndUpdate(id, {name}, {new:true});
+            const {name, categoryId} = req.body;
+            const cat = await subCategoryModel.findByIdAndUpdate(id, {name, slug:slugify(name), categoryId}, {new:true});
             if (!cat) return next(new AppError('sub category not found', 404));
             return res.json({message:"success"});
         })(req, res, next);   

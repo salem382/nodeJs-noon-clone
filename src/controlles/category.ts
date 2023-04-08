@@ -10,7 +10,8 @@ class Category {
         catchError(async (req:any, res:any, next:any) => {
 
             const {name} = req.body;
-            await categoryModel.insertMany({name, slug:slugify(name)});
+            let result = new categoryModel({name, slug:slugify(name)})
+            await result.save();
             return res.json({message:"success"});
         })(req, res, next);   
     }
@@ -19,7 +20,7 @@ class Category {
 
             const{id} = req.params;
             const {name} = req.body;
-            const cat = await categoryModel.findByIdAndUpdate(id, {name}, {new:true});
+            const cat = await categoryModel.findByIdAndUpdate(id, {name, slug:slugify(name)}, {new:true});
             if (!cat) return next(new AppError('category not found', 404));
             return res.json({message:"success"});
         })(req, res, next);   

@@ -3,6 +3,7 @@ import mongoose, { Document, Model, Mongoose, Schema } from 'mongoose';
 interface brand extends Document {
   name: string;
   logo:string;
+  slug:string;
 }
 
 const brandSchema: Schema<brand> = new mongoose.Schema({
@@ -14,6 +15,11 @@ const brandSchema: Schema<brand> = new mongoose.Schema({
         required:true,
         trim:true
     },
+    slug : {
+      type:String,
+      lowercase:true,
+      required:true
+  },
     logo:String
 }, {timestamps:true});
 

@@ -20,7 +20,8 @@ class Category {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { name } = req.body;
-                yield category_model_1.default.insertMany({ name, slug: (0, slugify_1.default)(name) });
+                let result = new category_model_1.default({ name, slug: (0, slugify_1.default)(name) });
+                yield result.save();
                 return res.json({ message: "success" });
             }))(req, res, next);
         });
@@ -30,7 +31,7 @@ class Category {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
                 const { name } = req.body;
-                const cat = yield category_model_1.default.findByIdAndUpdate(id, { name }, { new: true });
+                const cat = yield category_model_1.default.findByIdAndUpdate(id, { name, slug: (0, slugify_1.default)(name) }, { new: true });
                 if (!cat)
                     return next(new ApiErrors_1.AppError('category not found', 404));
                 return res.json({ message: "success" });

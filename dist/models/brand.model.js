@@ -12,6 +12,11 @@ const brandSchema = new mongoose_1.default.Schema({
         required: true,
         trim: true
     },
+    slug: {
+        type: String,
+        lowercase: true,
+        required: true
+    },
     logo: String
 }, { timestamps: true });
 const brandModel = mongoose_1.default.model('brand', brandSchema);

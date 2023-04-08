@@ -14,64 +14,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ApiErrors_1 = require("../utls/ApiErrors");
 const slugify_1 = __importDefault(require("slugify"));
-const subCategory_model_1 = __importDefault(require("../models/subCategory.model"));
-class SubCategory {
-    addSubCategory(req, res, next) {
+const brand_model_1 = __importDefault(require("../models/brand.model"));
+class Brand {
+    addBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const { name, categoryId } = req.body;
-                let result = new subCategory_model_1.default({ name, slug: (0, slugify_1.default)(name), categoryId });
+                const { name } = req.body;
+                let result = new brand_model_1.default({ name, slug: (0, slugify_1.default)(name) });
                 yield result.save();
                 return res.json({ message: "success" });
             }))(req, res, next);
         });
     }
-    updateSubCategory(req, res, next) {
+    updateBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const { name, categoryId } = req.body;
-                const cat = yield subCategory_model_1.default.findByIdAndUpdate(id, { name, slug: (0, slugify_1.default)(name), categoryId }, { new: true });
-                if (!cat)
-                    return next(new ApiErrors_1.AppError('sub category not found', 404));
+                const { name } = req.body;
+                const brand = yield brand_model_1.default.findByIdAndUpdate(id, { name, slug: (0, slugify_1.default)(name) }, { new: true });
+                if (!brand)
+                    return next(new ApiErrors_1.AppError('brand not found', 404));
                 return res.json({ message: "success" });
             }))(req, res, next);
         });
     }
-    deleteSubCategory(req, res, next) {
+    deleteBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const cat = yield subCategory_model_1.default.findByIdAndDelete(id, { new: true });
-                if (!cat)
-                    return next(new ApiErrors_1.AppError('category not found', 404));
+                const brand = yield brand_model_1.default.findByIdAndDelete(id, { new: true });
+                if (!brand)
+                    return next(new ApiErrors_1.AppError('Brand not found', 404));
                 return res.json({ message: "success" });
             }))(req, res, next);
         });
     }
-    getAllSubCategory(req, res, next) {
+    getAllBrands(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const { categoryId } = req.params;
-                let filter = {};
-                if (categoryId)
-                    filter = req.params;
-                const result = yield subCategory_model_1.default.find(filter);
+                const result = yield brand_model_1.default.find({});
                 return res.json({ message: "success", result });
             }))(req, res, next);
         });
     }
-    getSubCategory(req, res, next) {
+    getBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const result = yield subCategory_model_1.default.findById(id);
+                const result = yield brand_model_1.default.findById(id);
                 if (!result)
-                    return next(new ApiErrors_1.AppError('category not found', 404));
+                    return next(new ApiErrors_1.AppError('Brand not found', 404));
                 return res.json({ message: "success", result });
             }))(req, res, next);
         });
     }
 }
-const subCategory = new SubCategory();
-exports.default = subCategory;
+const brand = new Brand();
+exports.default = brand;
