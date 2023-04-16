@@ -19,5 +19,8 @@ const categorySchema = new mongoose_1.default.Schema({
     },
     img: String
 }, { timestamps: true });
+categorySchema.post('init', (doc) => {
+    doc.img = 'http://localhost:5000/category/' + doc.img;
+});
 const categoryModel = mongoose_1.default.model('Category', categorySchema);
 exports.default = categoryModel;

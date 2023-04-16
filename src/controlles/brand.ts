@@ -3,14 +3,14 @@ import slugify from "slugify";
 import brandModel from "../models/brand.model";
 
 
-
 class Brand {
  
     async addBrand(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            const {name} = req.body;
-            let result = new brandModel({name,  slug:slugify(name)});
+            req.body.slug = slugify(req.body.name);
+            req.body.img = req.file.filename;
+            let result = new brandModel(req.body);
             await result.save();
             return res.json({message:"success"});
         })(req, res, next);   
@@ -19,8 +19,9 @@ class Brand {
         catchError(async (req:any, res:any, next:any) => {
 
             const{id} = req.params;
-            const {name} = req.body;
-            const brand = await brandModel.findByIdAndUpdate(id, {name, slug:slugify(name)}, {new:true});
+            req.body.slug = slugify(req.body.name);
+            req.body.img = req.file.filename;
+            const brand = await brandModel.findByIdAndUpdate(id, req.body , {new:true});
             if (!brand) return next(new AppError('brand not found', 404));
             return res.json({message:"success"});
         })(req, res, next);   

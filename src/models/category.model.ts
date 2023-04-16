@@ -23,6 +23,11 @@ const categorySchema: Schema<category> = new mongoose.Schema({
     img:String
 }, {timestamps:true});
 
+categorySchema.post('init', (doc) => {
+    doc.img = 'http://localhost:5000/category/' + doc.img;
+})
+
+
 
 const categoryModel: Model<category> = mongoose.model<category>('Category', categorySchema);
 
