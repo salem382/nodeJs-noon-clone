@@ -1,13 +1,15 @@
 import { AppError, catchError } from "../utls/ApiErrors";
 import slugify from "slugify";
 import productModel from "../models/product.model";
-
+import ApiFeatures from "../utls/ApiFeatures";
 
 class Product {
  
     async addProduct(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
+            req.body.imgCover = req.files.imgCover[0].filename;
+            req.body.images = req.files.imgs.map((obj: { filename: any; }) => obj.filename);
             req.body.slug = slugify(req.body.title)
             let result = new productModel(req.body);
             await result.save();
@@ -36,45 +38,9 @@ class Product {
     async getAllProducts(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            // pagination ======
-            let page = req.query.page * 1 || 1;
-            if (req.query.page <= 0)  page = 1;
-            let limit = 2;
-            let skip = (page - 1) * limit;
-            // filter========
-            let filterObj = {...req.query};
-            let excueArr= ['sort', 'fields', 'keyword', 'page'];
-            excueArr.forEach((q) => {
-                delete filterObj[q];
-            })
-            let stringifyFilterObj:string = JSON.stringify(filterObj);
-            filterObj = stringifyFilterObj.replace(/\b(gt|gte|lt|lte)\bg/, match => `$${match}`)
-
-            let mongooseQuery= productModel.find(filterObj).skip(skip).limit(limit);
-            //sort===========    
-
-            if (req.query.sort) {
-                let sortedBy:string = req.query.sort.split(',').join(' ');
-                mongooseQuery.sort(sortedBy) 
-            }
-
-            // search
-
-            if (req.query.keyword) {
-
-                mongooseQuery.find({$or:[
-                    {title:{$regx:req.query.keyword, $options:'i'}},
-                    {description:{$regx:req.query.keyword, $options:'i'}},
-                ]})
-            }
-            // select 
-
-            if (req.query.fields) {
-                let sortedBy:string = req.query.fields.split(',').join(' ');
-                mongooseQuery.select(sortedBy) 
-            }
-
-            const result = await mongooseQuery;
+            let apiFeatures = new ApiFeatures(productModel.find(), req.query)
+            .pagination().search().sort().select().filter();
+            const result = await apiFeatures.mongooseQuery;
             return res.json({message:"success",result});
         })(req, res, next);   
     }

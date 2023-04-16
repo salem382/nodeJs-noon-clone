@@ -19,13 +19,18 @@ const ApiErrors_1 = require("./utls/ApiErrors");
 const subCategory_routes_1 = __importDefault(require("./routes/subCategory.routes"));
 const brand_routes_1 = __importDefault(require("./routes/brand.routes"));
 const products_routes_1 = __importDefault(require("./routes/products.routes"));
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
+const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const app = (0, express_1.default)();
 (0, config_1.dbConnect)();
+app.use(express_1.default.static('uploads/'));
 app.use(express_1.default.json());
 app.use('/api/v1/category', category_routes_1.default);
 app.use('/api/v1/subCategory', subCategory_routes_1.default);
 app.use('/api/v1/brand', brand_routes_1.default);
 app.use('/api/v1/product', products_routes_1.default);
+app.use('/api/v1/user', user_routes_1.default);
+app.use('/api/v1/auth', auth_routes_1.default);
 app.use('*', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     return next(new ApiErrors_1.AppError('invalide url' + req.originalUrl, 404));
 }));

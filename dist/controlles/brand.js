@@ -19,8 +19,9 @@ class Brand {
     addBrand(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const { name } = req.body;
-                let result = new brand_model_1.default({ name, slug: (0, slugify_1.default)(name) });
+                req.body.slug = (0, slugify_1.default)(req.body.name);
+                req.body.img = req.file.filename;
+                let result = new brand_model_1.default(req.body);
                 yield result.save();
                 return res.json({ message: "success" });
             }))(req, res, next);
@@ -30,8 +31,9 @@ class Brand {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const { name } = req.body;
-                const brand = yield brand_model_1.default.findByIdAndUpdate(id, { name, slug: (0, slugify_1.default)(name) }, { new: true });
+                req.body.slug = (0, slugify_1.default)(req.body.name);
+                req.body.img = req.file.filename;
+                const brand = yield brand_model_1.default.findByIdAndUpdate(id, req.body, { new: true });
                 if (!brand)
                     return next(new ApiErrors_1.AppError('brand not found', 404));
                 return res.json({ message: "success" });

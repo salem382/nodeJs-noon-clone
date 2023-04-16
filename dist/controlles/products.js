@@ -15,10 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiErrors_1 = require("../utls/ApiErrors");
 const slugify_1 = __importDefault(require("slugify"));
 const product_model_1 = __importDefault(require("../models/product.model"));
+const ApiFeatures_1 = __importDefault(require("../utls/ApiFeatures"));
 class Product {
     addProduct(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+                req.body.imgCover = req.files.imgCover[0].filename;
+                req.body.images = req.files.imgs.map((obj) => obj.filename);
                 req.body.slug = (0, slugify_1.default)(req.body.title);
                 let result = new product_model_1.default(req.body);
                 yield result.save();
@@ -53,39 +56,9 @@ class Product {
     getAllProducts(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                // pagination ======
-                let page = req.query.page * 1 || 1;
-                if (req.query.page <= 0)
-                    page = 1;
-                let limit = 2;
-                let skip = (page - 1) * limit;
-                // filter========
-                let filterObj = Object.assign({}, req.query);
-                let excueArr = ['sort', 'fields', 'keyword', 'page'];
-                excueArr.forEach((q) => {
-                    delete filterObj[q];
-                });
-                let stringifyFilterObj = JSON.stringify(filterObj);
-                filterObj = stringifyFilterObj.replace(/\b(gt|gte|lt|lte)\bg/, match => `$${match}`);
-                let mongooseQuery = product_model_1.default.find(filterObj).skip(skip).limit(limit);
-                //sort===========    
-                if (req.query.sort) {
-                    let sortedBy = req.query.sort.split(',').join(' ');
-                    mongooseQuery.sort(sortedBy);
-                }
-                // search
-                if (req.query.keyword) {
-                    mongooseQuery.find({ $or: [
-                            { title: { $regx: req.query.keyword, $options: 'i' } },
-                            { description: { $regx: req.query.keyword, $options: 'i' } },
-                        ] });
-                }
-                // select 
-                if (req.query.fields) {
-                    let sortedBy = req.query.fields.split(',').join(' ');
-                    mongooseQuery.select(sortedBy);
-                }
-                const result = yield mongooseQuery;
+                let apiFeatures = new ApiFeatures_1.default(product_model_1.default.find(), req.query)
+                    .pagination().search().sort().select().filter();
+                const result = yield apiFeatures.mongooseQuery;
                 return res.json({ message: "success", result });
             }))(req, res, next);
         });

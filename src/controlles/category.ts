@@ -9,8 +9,9 @@ class Category {
     async addCategory(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            const {name} = req.body;
-            let result = new categoryModel({name, slug:slugify(name)})
+            req.body.slug = slugify(req.body.name);
+            req.body.img = req.file.filename;
+            let result = new categoryModel(req.body)
             await result.save();
             return res.json({message:"success"});
         })(req, res, next);   
@@ -19,12 +20,14 @@ class Category {
         catchError(async (req:any, res:any, next:any) => {
 
             const{id} = req.params;
-            const {name} = req.body;
-            const cat = await categoryModel.findByIdAndUpdate(id, {name, slug:slugify(name)}, {new:true});
+            req.body.slug = slugify(req.body.name);
+            req.body.img = req.file.filename;
+            const cat = await categoryModel.findByIdAndUpdate(id,req.body , {new:true});
             if (!cat) return next(new AppError('category not found', 404));
             return res.json({message:"success"});
         })(req, res, next);   
     }
+    
     async deleteCategory(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 

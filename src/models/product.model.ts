@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Mongoose, Schema } from 'mongoose';
 
+
 interface product extends Document {
   title: string;
   slug:string;
@@ -86,6 +87,12 @@ const productSchema: Schema<product> = new mongoose.Schema({
     }
 }, {timestamps:true});
 
+
+productSchema.post('init', (doc) => {
+    doc.imgCover = 'http://localhost:5000/product/' + doc.imgCover;
+    doc.images = doc.images.map(obj => 'http://localhost:5000/product/' + obj)
+})
+  
 
 const productModel: Model<product> = mongoose.model<product>('product', productSchema);
 

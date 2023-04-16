@@ -92,5 +92,9 @@ const productSchema = new mongoose_1.default.Schema({
         required: [true, 'brand is required']
     }
 }, { timestamps: true });
+productSchema.post('init', (doc) => {
+    doc.imgCover = 'http://localhost:5000/product/' + doc.imgCover;
+    doc.images = doc.images.map(obj => 'http://localhost:5000/product/' + obj);
+});
 const productModel = mongoose_1.default.model('product', productSchema);
 exports.default = productModel;
