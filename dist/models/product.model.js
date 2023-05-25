@@ -91,10 +91,18 @@ const productSchema = new mongoose_1.default.Schema({
         ref: 'brand',
         required: [true, 'brand is required']
     }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 productSchema.post('init', (doc) => {
     doc.imgCover = 'http://localhost:5000/product/' + doc.imgCover;
     doc.images = doc.images.map(obj => 'http://localhost:5000/product/' + obj);
+});
+productSchema.virtual('myReviews', {
+    ref: 'review',
+    localField: '_id',
+    foreignField: 'product'
+});
+productSchema.pre(/^find/, function () {
+    this.populate('myReviews');
 });
 const productModel = mongoose_1.default.model('product', productSchema);
 exports.default = productModel;

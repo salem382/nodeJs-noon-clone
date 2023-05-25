@@ -8,11 +8,11 @@ const SubcategoryRouter = express.Router({mergeParams:true});
 
 
 SubcategoryRouter.route('/')
-    .post(protectRoute, allowedTo('admin'), validation(nameAndIdValidation), subCategory.addSubCategory)
+    .post(protectRoute, allowedTo('admin'), subCategory.addSubCategory)
     .get(subCategory.getAllSubCategory);
 
 SubcategoryRouter.route('/:id')
-    .put(protectRoute, allowedTo('admin'),validation(nameAndIdValidation), subCategory.updateSubCategory)
+    .put(protectRoute, allowedTo('admin'), subCategory.updateSubCategory)
     .delete(protectRoute, allowedTo('admin'),validation(idValidation), subCategory.deleteSubCategory)
     .get(validation(idValidation), subCategory.getSubCategory)
 

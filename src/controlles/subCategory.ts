@@ -1,6 +1,7 @@
 import { AppError, catchError } from "../utls/ApiErrors";
 import slugify from "slugify";
 import subCategoryModel from "../models/subCategory.model";
+import ApiFeatures from "../utls/ApiFeatures";
 
 class SubCategory {
  
@@ -35,18 +36,20 @@ class SubCategory {
     async getAllSubCategory(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            const {categoryId} = req.params;
-            let filter = {};
-            if (categoryId) filter = req.params;
-            const result = await subCategoryModel.find(filter);
-            return res.json({message:"success",result});
+            let length = (await subCategoryModel.find()).length;
+        
+            let apiFeatures = new ApiFeatures(subCategoryModel.find(), req.query)
+            .pagination().search().sort().select().filter();
+            let result = await apiFeatures.mongooseQuery.populate('categoryId', 'name -_id')
+
+            return res.json({message:"success",currentPage : apiFeatures.page, pagesLength:Math.ceil(length / apiFeatures.pagesLength),result});
         })(req, res, next);   
     }
     async getSubCategory(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
             const {id} = req.params;
-            const result = await subCategoryModel.findById(id);
+            const result = await subCategoryModel.findById(id).populate('categoryId');
             if (!result) return next(new AppError('category not found', 404));
             return res.json({message:"success", result});
         })(req, res, next);   

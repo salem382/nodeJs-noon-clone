@@ -25,7 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const reviewSchema = new mongoose_1.default.Schema({
-    comments: {
+    comment: {
         type: String,
         trim: true,
         required: [true, 'comment is required']
@@ -37,7 +37,15 @@ const reviewSchema = new mongoose_1.default.Schema({
     product: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'product',
+    },
+    rate: {
+        type: Number,
+        min: 1,
+        max: 5
     }
 }, { timestamps: true });
+reviewSchema.pre(/^find/, function () {
+    this.populate('user', 'name');
+});
 const reviewModel = mongoose_1.default.model('review', reviewSchema);
 exports.default = reviewModel;

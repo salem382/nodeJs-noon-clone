@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiErrors_1 = require("../utls/ApiErrors");
 const slugify_1 = __importDefault(require("slugify"));
 const subCategory_model_1 = __importDefault(require("../models/subCategory.model"));
+const ApiFeatures_1 = __importDefault(require("../utls/ApiFeatures"));
 class SubCategory {
     addSubCategory(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,12 +53,11 @@ class SubCategory {
     getAllSubCategory(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const { categoryId } = req.params;
-                let filter = {};
-                if (categoryId)
-                    filter = req.params;
-                const result = yield subCategory_model_1.default.find(filter);
-                return res.json({ message: "success", result });
+                let length = (yield subCategory_model_1.default.find()).length;
+                let apiFeatures = new ApiFeatures_1.default(subCategory_model_1.default.find(), req.query)
+                    .pagination().search().sort().select().filter();
+                let result = yield apiFeatures.mongooseQuery.populate('categoryId', 'name -_id');
+                return res.json({ message: "success", currentPage: apiFeatures.page, pagesLength: Math.ceil(length / apiFeatures.pagesLength), result });
             }))(req, res, next);
         });
     }
@@ -65,7 +65,7 @@ class SubCategory {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const result = yield subCategory_model_1.default.findById(id);
+                const result = yield subCategory_model_1.default.findById(id).populate('categoryId');
                 if (!result)
                     return next(new ApiErrors_1.AppError('category not found', 404));
                 return res.json({ message: "success", result });

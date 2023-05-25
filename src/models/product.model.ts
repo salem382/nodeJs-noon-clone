@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Mongoose, Schema } from 'mongoose';
 
 
-interface product extends Document {
+export interface product extends Document {
   title: string;
   slug:string;
   price:number;
@@ -85,14 +85,23 @@ const productSchema: Schema<product> = new mongoose.Schema({
         ref:'brand',
         required:[true, 'brand is required']
     }
-}, {timestamps:true});
+}, {timestamps:true, toJSON:{virtuals:true}, toObject:{virtuals:true}});
 
 
 productSchema.post('init', (doc) => {
     doc.imgCover = 'http://localhost:5000/product/' + doc.imgCover;
     doc.images = doc.images.map(obj => 'http://localhost:5000/product/' + obj)
 })
-  
+
+productSchema.virtual('myReviews', {
+    ref: 'review',
+    localField: '_id',
+    foreignField: 'product'
+})
+productSchema.pre(/^find/, function() {
+
+    this.populate('myReviews');
+});
 
 const productModel: Model<product> = mongoose.model<product>('product', productSchema);
 

@@ -15,12 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiErrors_1 = require("../utls/ApiErrors");
 const category_model_1 = __importDefault(require("../models/category.model"));
 const slugify_1 = __importDefault(require("slugify"));
+const ApiFeatures_1 = __importDefault(require("../utls/ApiFeatures"));
 class Category {
     addCategory(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 req.body.slug = (0, slugify_1.default)(req.body.name);
-                req.body.img = req.file.filename;
                 let result = new category_model_1.default(req.body);
                 yield result.save();
                 return res.json({ message: "success" });
@@ -32,7 +32,6 @@ class Category {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
                 req.body.slug = (0, slugify_1.default)(req.body.name);
-                req.body.img = req.file.filename;
                 const cat = yield category_model_1.default.findByIdAndUpdate(id, req.body, { new: true });
                 if (!cat)
                     return next(new ApiErrors_1.AppError('category not found', 404));
@@ -54,8 +53,11 @@ class Category {
     getAllCategory(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const result = yield category_model_1.default.find({});
-                return res.json({ message: "success", result });
+                let length = (yield category_model_1.default.find()).length;
+                let apiFeatures = new ApiFeatures_1.default(category_model_1.default.find(), req.query)
+                    .pagination().search().sort().select().filter();
+                let result = yield apiFeatures.mongooseQuery;
+                return res.json({ message: "success", currentPage: apiFeatures.page, pagesLength: Math.ceil(length / apiFeatures.pagesLength), result });
             }))(req, res, next);
         });
     }

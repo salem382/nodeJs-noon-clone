@@ -1,6 +1,7 @@
 import { AppError, catchError } from "../utls/ApiErrors";
 import slugify from "slugify";
 import brandModel from "../models/brand.model";
+import ApiFeatures from "../utls/ApiFeatures";
 
 
 class Brand {
@@ -9,7 +10,7 @@ class Brand {
         catchError(async (req:any, res:any, next:any) => {
 
             req.body.slug = slugify(req.body.name);
-            req.body.img = req.file.filename;
+            req.body.logo = req.file.filename;
             let result = new brandModel(req.body);
             await result.save();
             return res.json({message:"success"});
@@ -20,7 +21,7 @@ class Brand {
 
             const{id} = req.params;
             req.body.slug = slugify(req.body.name);
-            req.body.img = req.file.filename;
+            req.body.logo = req.file.filename;
             const brand = await brandModel.findByIdAndUpdate(id, req.body , {new:true});
             if (!brand) return next(new AppError('brand not found', 404));
             return res.json({message:"success"});
@@ -38,8 +39,14 @@ class Brand {
     async getAllBrands(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            const result = await brandModel.find({});
-            return res.json({message:"success",result});
+            let length = (await brandModel.find()).length;
+        
+            let apiFeatures = new ApiFeatures(brandModel.find(), req.query)
+            .pagination().search().sort().select().filter();
+            let result = await apiFeatures.mongooseQuery;
+
+            return res.json({message:"success",currentPage : apiFeatures.page, pagesLength:Math.ceil(length / apiFeatures.pagesLength),result});
+      
         })(req, res, next);   
     }
     async getBrand(req:any, res:any, next:any):Promise<void>  {

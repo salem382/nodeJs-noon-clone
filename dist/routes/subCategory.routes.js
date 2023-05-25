@@ -10,10 +10,10 @@ const validation_1 = __importDefault(require("../middleware/validation"));
 const protectRoute_1 = require("../middleware/protectRoute");
 const SubcategoryRouter = express_1.default.Router({ mergeParams: true });
 SubcategoryRouter.route('/')
-    .post(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, validation_1.default)(global_validation_1.nameAndIdValidation), subCategory_1.default.addSubCategory)
+    .post(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), subCategory_1.default.addSubCategory)
     .get(subCategory_1.default.getAllSubCategory);
 SubcategoryRouter.route('/:id')
-    .put(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, validation_1.default)(global_validation_1.nameAndIdValidation), subCategory_1.default.updateSubCategory)
+    .put(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), subCategory_1.default.updateSubCategory)
     .delete(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, validation_1.default)(global_validation_1.idValidation), subCategory_1.default.deleteSubCategory)
     .get((0, validation_1.default)(global_validation_1.idValidation), subCategory_1.default.getSubCategory);
 exports.default = SubcategoryRouter;

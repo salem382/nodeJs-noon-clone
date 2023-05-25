@@ -2,17 +2,20 @@ class ApiFeatures {
 
     mongooseQuery:any;
     mongooseString:any;
+    page:any;
+    pagesLength:any; 
     constructor (mongooseQuery:any, mongooseString:any) {
         this.mongooseQuery = mongooseQuery;
         this.mongooseString = mongooseString;
     }
 
     pagination () {
-        let page = this.mongooseString.page * 1 || 1;
-        if (this.mongooseString?.page <= 0)  page = 1;
-        let limit = 2;
-        let skip = (page - 1) * limit;
+        this.page = this.mongooseString.page * 1 || 1;
+        if (this.mongooseString?.page <= 0)  this.page = 1;
+        let limit = 4;
+        let skip = (this.page - 1) * limit;
         this.mongooseQuery.skip(skip).limit(limit);
+        this.pagesLength =  limit;
         return this;
     }
 

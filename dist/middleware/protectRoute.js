@@ -24,7 +24,9 @@ const protectRoute = (req, res, next) => {
         const user = yield user_models_1.default.findById(decode.id);
         if (!user)
             return next(new ApiErrors_1.AppError('invalid token', 401));
-        //if ((user.passwordChangedAt.getTime() / 1000) > decode.iat)  return next(new AppError('invalid token', 401));
+        // if (user.passwordChangedAt) {
+        //     //if ((user.passwordChangedAt.getTime() / 1000) > decode.iat)  return next(new AppError('invalid token', 401));
+        // }
         req.user = user;
         next();
     }));

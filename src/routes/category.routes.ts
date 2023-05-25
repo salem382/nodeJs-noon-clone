@@ -13,8 +13,8 @@ const categoryRouter = express.Router();
 categoryRouter.use('/:categoryId/subcategory', SubcategoryRouter);
 
 categoryRouter.route('/')
-.post( protectRoute, allowedTo('admin') ,fileUpload(validation_object.image, 'category').single('image'), validation(nameValidation),category.addCategory)
-.get( category.getAllCategory);
+    .post( protectRoute, allowedTo('admin') ,fileUpload(validation_object.image, 'category').single('image'), validation(nameValidation),category.addCategory)
+    .get( category.getAllCategory);
 categoryRouter.route('/:id')
 .put( protectRoute, allowedTo('admin') ,fileUpload(validation_object.image, 'category').single('image'), validation(nameAndIdValidation),category.updateCategory)
 .delete( protectRoute, allowedTo('admin') ,validation(idValidation),category.deleteCategory)
