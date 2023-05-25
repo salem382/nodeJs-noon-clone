@@ -10,7 +10,7 @@ Welcome to Noon Clone ! This is a web application built with Node.js and Mongoos
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
-- [License](#license)
+
 
 ## Features
 
@@ -52,78 +52,78 @@ The application should now be running on `http://localhost:5000`.
 
 ## API Endpoints
 
-# Auth
+### Auth
 - `localhost:5000/api/v1/auth/signup` (post): sign up.
 - `localhost:5000/api/v1/auth/signin` (post): sign in.
 
-# user
+### user
 - `localhost:5000/api/v1/user?page=1` (GET): Get a list of all users.
 - `localhost:5000/api/v1/user` (post): add user.
 - `localhost:5000/api/v1/user/id` (GET): get spcific user.
 - `localhost:5000/api/v1/user/id` (put): update user.
 - `localhost:5000/api/v1/user/id` (delete): delete user.
-# Category
+### Category
 - `localhost:5000/api/v1/category?page=1` (GET): Get a list of all categories.
 - `localhost:5000/api/v1/category` (post): add category.
 - `localhost:5000/api/v1/category/id` (GET): get spcific category.
 - `localhost:5000/api/v1/category/id` (put): update category.
 - `localhost:5000/api/v1/category/id` (delete): delete category.
 
-# subCategory
+### subCategory
 - `localhost:5000/api/v1/subCategory?page=1` (GET): Get a list of all subCategories.
 - `localhost:5000/api/v1/subCategory` (post): add subCategory.
 - `localhost:5000/api/v1/subCategory/id` (GET): get spcific subCategory.
 - `localhost:5000/api/v1/subCategory/id` (put): update subCategory.
 - `localhost:5000/api/v1/subCategory/id` (delete): delete subCategory.
 
-# Brand
+### Brand
 - `localhost:5000/api/v1/brand?page=1` (GET): Get a list of all brand.
 - `localhost:5000/api/v1/brand` (post): add brand.
 - `localhost:5000/api/v1/brand/id` (GET): get spcific brand.
 - `localhost:5000/api/v1/brand/id` (put): update brand.
 - `localhost:5000/api/v1/brand/id` (delete): delete brand.
 
-# product
+### product
 - `localhost:5000/api/v1/product?page=1` (GET): Get a list of all products.
 - `localhost:5000/api/v1/product` (post): add product.
 - `localhost:5000/api/v1/product/id` (GET): get spcific product.
 - `localhost:5000/api/v1/product/id` (put): update product.
 - `localhost:5000/api/v1/product/id` (delete): delete product.
 
-# Review
+### Review
 - `localhost:5000/api/v1/review?page=1` (GET): Get a list of all review.
 - `localhost:5000/api/v1/review` (post): add review.
 - `localhost:5000/api/v1/review/id` (GET): get spcific review.
 - `localhost:5000/api/v1/review/id` (put): update review.
 - `localhost:5000/api/v1/review/id` (delete): delete review.
 
-# wishlist
+### wishlist
 - `localhost:5000/api/v1/wishlist` (post): add wishlist.
 - `localhost:5000/api/v1/wishlist/id` (put): update wishlist.
 - `localhost:5000/api/v1/wishlist/id` (delete): delete wishlist.
 
-# Address
+### Address
 - `localhost:5000/api/v1/address` (GET): Get a list of all wishlist.
 - `localhost:5000/api/v1/address` (post): add wishlist.
 - `localhost:5000/api/v1/address/id` (GET): get spcific wishlist.
 - `localhost:5000/api/v1/address/id` (put): update wishlist.
 - `localhost:5000/api/v1/address/id` (delete): delete wishlist.
 
-# Coupon
+### Coupon
 - `localhost:5000/api/v1/coupon` (GET): Get a list of all coupon.
 - `localhost:5000/api/v1/coupon` (post): add coupon.
 - `localhost:5000/api/v1/coupon/id` (GET): get spcific coupon.
 - `localhost:5000/api/v1/coupon/id` (put): update coupon.
 - `localhost:5000/api/v1/coupon/id` (delete): delete coupon.
 
-# cart 
+### cart 
 - `localhost:5000/api/v1/cart` (post): add to cart.
 - `localhost:5000/api/v1/cart/id` (delete): delete from cart.
 - `localhost:5000/api/v1/cart/id` (post): set quantity.
 - `localhost:5000/api/v1/cart/applyCouopn` (post): apply cioipon for discount.
 - `localhost:5000/api/v1/cart` (get): get cart.
 
-# order 
+### order 
 
 - `localhost:5000/api/v1/order/id` (post): cash order.
 - `localhost:5000/api/v1/order/id` (get): get spcific order.
