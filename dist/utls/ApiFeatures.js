@@ -7,12 +7,13 @@ class ApiFeatures {
     }
     pagination() {
         var _a;
-        let page = this.mongooseString.page * 1 || 1;
+        this.page = this.mongooseString.page * 1 || 1;
         if (((_a = this.mongooseString) === null || _a === void 0 ? void 0 : _a.page) <= 0)
-            page = 1;
-        let limit = 2;
-        let skip = (page - 1) * limit;
+            this.page = 1;
+        let limit = 4;
+        let skip = (this.page - 1) * limit;
         this.mongooseQuery.skip(skip).limit(limit);
+        this.pagesLength = limit;
         return this;
     }
     // filter========

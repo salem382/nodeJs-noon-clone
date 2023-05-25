@@ -14,7 +14,7 @@ brandRouter.route('/')
     .post(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, fileUploads_1.fileUpload)(fileUploads_1.validation_object.image, 'brand').single('image'), (0, validation_1.default)(global_validation_1.nameValidation), brand_1.default.addBrand)
     .get(brand_1.default.getAllBrands);
 brandRouter.route('/:id')
-    .put(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, fileUploads_1.fileUpload)(fileUploads_1.validation_object.image, 'brand').single('image'), (0, validation_1.default)(global_validation_1.nameAndIdValidation), brand_1.default.updateBrand)
+    .put(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), brand_1.default.updateBrand)
     .delete(protectRoute_1.protectRoute, (0, protectRoute_1.allowedTo)('admin'), (0, validation_1.default)(global_validation_1.idValidation), brand_1.default.deleteBrand)
     .get((0, validation_1.default)(global_validation_1.idValidation), brand_1.default.getBrand);
 exports.default = brandRouter;

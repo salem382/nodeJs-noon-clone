@@ -38,10 +38,11 @@ class Product {
     async getAllProducts(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
+            let length = (await productModel.find()).length;
             let apiFeatures = new ApiFeatures(productModel.find(), req.query)
             .pagination().search().sort().select().filter();
             const result = await apiFeatures.mongooseQuery;
-            return res.json({message:"success",result});
+            return res.json({message:"success",currentPage : apiFeatures.page, pagesLength:Math.ceil(length / apiFeatures.pagesLength),result});
         })(req, res, next);   
     }
     async getProduct(req:any, res:any, next:any):Promise<void>  {

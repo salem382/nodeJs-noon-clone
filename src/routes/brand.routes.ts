@@ -14,7 +14,7 @@ brandRouter.route('/')
     .get(brand.getAllBrands);
 
 brandRouter.route('/:id')
-    .put(protectRoute, allowedTo('admin') ,fileUpload(validation_object.image, 'brand').single('image'), validation(nameAndIdValidation),brand.updateBrand)
+    .put(protectRoute, allowedTo('admin') ,brand.updateBrand)
     .delete(protectRoute, allowedTo('admin') ,validation(idValidation), brand.deleteBrand)
     .get(validation(idValidation), brand.getBrand)
 

@@ -11,6 +11,5 @@ exports.nameValidation = joi_1.default.object({
     name: joi_1.default.string().min(2).max(25).required()
 });
 exports.nameAndIdValidation = joi_1.default.object({
-    name: joi_1.default.string().min(2).max(25),
-    id: joi_1.default.string().hex().length(24).required()
+    name: joi_1.default.string().min(2).max(25)
 });

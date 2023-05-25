@@ -11,7 +11,10 @@ export const protectRoute = (req:any, res:any, next:any):void => {
         if (err) return next(new AppError(err.message, 401));
         const user = await userModel.findById(decode.id);
         if (!user) return next(new AppError('invalid token', 401));
-        //if ((user.passwordChangedAt.getTime() / 1000) > decode.iat)  return next(new AppError('invalid token', 401));
+        // if (user.passwordChangedAt) {
+
+        //     //if ((user.passwordChangedAt.getTime() / 1000) > decode.iat)  return next(new AppError('invalid token', 401));
+        // }
         req.user = user;
         next();
     });

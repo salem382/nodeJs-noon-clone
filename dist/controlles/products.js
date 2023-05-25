@@ -56,10 +56,11 @@ class Product {
     getAllProducts(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
+                let length = (yield product_model_1.default.find()).length;
                 let apiFeatures = new ApiFeatures_1.default(product_model_1.default.find(), req.query)
                     .pagination().search().sort().select().filter();
                 const result = yield apiFeatures.mongooseQuery;
-                return res.json({ message: "success", result });
+                return res.json({ message: "success", currentPage: apiFeatures.page, pagesLength: Math.ceil(length / apiFeatures.pagesLength), result });
             }))(req, res, next);
         });
     }

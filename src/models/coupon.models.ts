@@ -1,31 +1,30 @@
 import mongoose, { Document, Model, Mongoose, Schema } from 'mongoose';
 
 interface coupon extends Document {
-  coupont: string;
-  discount:number;
-  expire:Date;
+    code: string;
+    discount:number;
+    expire:Date;
 }
 
 const couponSchema: Schema<coupon> = new mongoose.Schema({
 
-    coupont: {
+    code: {
        type:String,
-       trim:true,
+       required:true,
        unique:true,
-       required:[true, 'comment is required']
+       trim:true
     },
     discount:{
         type:Number,
-        min:0,
-        required:[true, 'coupon discount is required']
+        required:true
     },
     expire:{
         type:Date,
-        required:[true, 'coupon date is required']
+        required:true
     }
 }, {timestamps:true});
 
 
-const couponModel: Model<coupon> = mongoose.model<coupon>('coupon', couponSchema);
+const couponModel: Model<coupon> = mongoose.model<coupon>('coup', couponSchema);
 
 export default couponModel;

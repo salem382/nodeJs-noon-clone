@@ -1,6 +1,4 @@
-
 import bcrypt from 'bcrypt';
-
 import mongoose, { Document, Model, Mongoose, Schema } from 'mongoose';
 
 enum roleStatus {
@@ -17,6 +15,8 @@ interface user extends Document {
   role:roleStatus;
   isActive:Boolean;
   verified:Boolean;
+  wishlist:Array<Schema.Types.ObjectId>;
+  adresses:object[];
 }
 
 const userSchema: Schema<user> = new mongoose.Schema({
@@ -53,7 +53,13 @@ const userSchema: Schema<user> = new mongoose.Schema({
     verified:{
         type:Boolean,
         default:false
-    }
+    },
+    wishlist:[{type:Schema.Types.ObjectId, ref:'product'}],
+    adresses:[{
+        city:String,
+        street:String,
+        phone:String
+    }]
 }, {timestamps:true});
 
 
@@ -61,6 +67,9 @@ userSchema.pre('save', function() {
     this.password =  bcrypt.hashSync(this.password , 8);
 })
 
+userSchema.post('init', (doc) => {
+    doc.profilePic = 'http://localhost:5000/user/' + doc.profilePic;
+})
 
 
 const userModel: Model<user> = mongoose.model<user>('user', userSchema);

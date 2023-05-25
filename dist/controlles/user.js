@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ApiErrors_1 = require("../utls/ApiErrors");
 const user_models_1 = __importDefault(require("../models/user.models"));
+const ApiFeatures_1 = __importDefault(require("../utls/ApiFeatures"));
 class User {
     addUser(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -22,6 +23,7 @@ class User {
                 const user = yield user_models_1.default.findOne({ email });
                 if (user)
                     return next(new ApiErrors_1.AppError('user already exist use another email', 409));
+                req.body.profilePic = req.file.filename;
                 let result = new user_models_1.default(req.body);
                 yield result.save();
                 return res.json({ message: "success" });
@@ -32,7 +34,10 @@ class User {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
                 const { id } = req.params;
-                const User = yield user_models_1.default.findByIdAndUpdate(id, req.body, { new: true });
+                const { name, role } = req.body;
+                if (name == '' || role == '')
+                    return next(new ApiErrors_1.AppError('user variables not allow to be empty', 409));
+                const User = yield user_models_1.default.findByIdAndUpdate(id, { name, role, profilePic: req.file.filename }, { new: true });
                 if (!User)
                     return next(new ApiErrors_1.AppError('User not found', 404));
                 return res.json({ message: "success" });
@@ -53,8 +58,12 @@ class User {
     getAllUsers(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, ApiErrors_1.catchError)((req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const result = yield user_models_1.default.find({});
-                return res.json({ message: "success", result });
+                let length = (yield user_models_1.default.find()).length;
+                let apiFeatures = new ApiFeatures_1.default(user_models_1.default.find(), req.query)
+                    .pagination().search().sort().select().filter();
+                let result = yield apiFeatures.mongooseQuery;
+                result.forEach((user) => user.password = '');
+                return res.json({ message: "success", currentPage: apiFeatures.page, pagesLength: Math.ceil(length / apiFeatures.pagesLength), result });
             }))(req, res, next);
         });
     }

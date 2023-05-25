@@ -1,6 +1,7 @@
 import { AppError, catchError } from "../utls/ApiErrors";
 import userModel from "../models/user.models";
-
+import ApiFeatures from "../utls/ApiFeatures";
+import { object } from "joi";
 
 class User {
  
@@ -10,6 +11,7 @@ class User {
             const {email} = req.body;
             const user = await userModel.findOne({email});
             if (user) return next(new AppError('user already exist use another email',409));
+            req.body.profilePic = req.file.filename;
             let result = new userModel(req.body);
             await result.save();
             return res.json({message:"success"});
@@ -18,8 +20,11 @@ class User {
     async updateUser(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
+            
             const{id} = req.params;
-            const User = await userModel.findByIdAndUpdate(id, req.body , {new:true});
+            const {name, role} = req.body;
+            if (name == '' || role == '') return next(new AppError('user variables not allow to be empty', 409));
+            const User = await userModel.findByIdAndUpdate(id, {name, role, profilePic:req.file.filename} , {new:true});
             if (!User) return next(new AppError('User not found', 404));
             return res.json({message:"success"});
         })(req, res, next);   
@@ -36,8 +41,16 @@ class User {
     async getAllUsers(req:any, res:any, next:any):Promise<void>  {
         catchError(async (req:any, res:any, next:any) => {
 
-            const result = await userModel.find({});
-            return res.json({message:"success",result});
+            let length = (await userModel.find()).length;
+        
+            let apiFeatures = new ApiFeatures(userModel.find(), req.query)
+            .pagination().search().sort().select().filter();
+            let result = await apiFeatures.mongooseQuery;
+
+            result.forEach((user: { password: string; }) => user.password = '');
+
+            return res.json({message:"success",currentPage : apiFeatures.page, pagesLength:Math.ceil(length / apiFeatures.pagesLength),result});
+
         })(req, res, next);   
     }
     async getUser(req:any, res:any, next:any):Promise<void>  {

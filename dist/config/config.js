@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConnect = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const dbConnect = () => {
-    mongoose_1.default.connect('mongodb://localhost:27017/noon-clone')
+    mongoose_1.default.connect('mongodb+srv://Ahmed:Salem@cluster0.iqymeb8.mongodb.net/Ecommerce-noon-clone')
         .then(() => console.log("database is connected"))
         .catch(() => console.log("error in database"));
 };
