@@ -37,7 +37,7 @@ Before running this application, make sure you have the following prerequisites 
 4. Run the application: npm run start0
 
 
-The application should now be running on `http://localhost:3000`.
+The application should now be running on `http://localhost:5000`.
 
 ## Usage
 
